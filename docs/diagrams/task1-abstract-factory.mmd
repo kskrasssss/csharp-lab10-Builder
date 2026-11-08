@@ -1,0 +1,73 @@
+classDiagram
+direction TB
+
+class IVehicleKitFactory {
+  <<interface, Abstract Factory>>
+  +string VehicleType
+  +CreateTelematics() ITelematicsModule
+  +CreateEnergyCard() IEnergyCard
+  +CreateLevelSensor() ILevelSensor
+}
+
+class PetrolKitFactory {
+  <<Concrete Factory>>
+}
+class HybridKitFactory {
+  <<Concrete Factory>>
+}
+class ElectricKitFactory {
+  <<Concrete Factory>>
+}
+class GasKitFactory {
+  <<Concrete Factory, розширення>>
+}
+
+class ITelematicsModule {
+  <<interface, Abstract Product>>
+  +Describe() string
+}
+class IEnergyCard {
+  <<interface, Abstract Product>>
+  +Describe() string
+}
+class ILevelSensor {
+  <<interface, Abstract Product>>
+  +Describe() string
+}
+
+class PetrolTelematics
+class FuelCard
+class FuelLevelSensor
+class ElectricTelematics
+class ChargingCard
+class BatteryLevelSensor
+
+class FleetServiceDesk {
+  <<Client>>
+  +CommissionCar(string plate, IVehicleKitFactory factory) void
+}
+
+IVehicleKitFactory <|.. PetrolKitFactory
+IVehicleKitFactory <|.. HybridKitFactory
+IVehicleKitFactory <|.. ElectricKitFactory
+IVehicleKitFactory <|.. GasKitFactory
+
+ITelematicsModule <|.. PetrolTelematics
+ITelematicsModule <|.. ElectricTelematics
+IEnergyCard <|.. FuelCard
+IEnergyCard <|.. ChargingCard
+ILevelSensor <|.. FuelLevelSensor
+ILevelSensor <|.. BatteryLevelSensor
+
+PetrolKitFactory ..> PetrolTelematics : creates
+PetrolKitFactory ..> FuelCard : creates
+PetrolKitFactory ..> FuelLevelSensor : creates
+ElectricKitFactory ..> ElectricTelematics : creates
+ElectricKitFactory ..> ChargingCard : creates
+ElectricKitFactory ..> BatteryLevelSensor : creates
+
+FleetServiceDesk ..> IVehicleKitFactory : uses
+FleetServiceDesk ..> ITelematicsModule : uses
+FleetServiceDesk ..> IEnergyCard : uses
+FleetServiceDesk ..> ILevelSensor : uses
+note for IVehicleKitFactory "Один виклик фабрики дає весь набір одного сімейства. Для стислості Hybrid і Gas продукти не показано"
