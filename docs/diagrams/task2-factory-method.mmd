@@ -1,0 +1,70 @@
+classDiagram
+direction TB
+
+class RentalService {
+  <<abstract, Creator>>
+  #string Name*
+  +Rent(string plate, string client, int durationMinutes) decimal
+  #CreateTrip(string plate, string client, int minutes)* Trip
+  -ValidateRequest(string plate, string client, int minutes)$ void
+}
+
+class MinuteRentalService {
+  <<Concrete Creator>>
+  #CreateTrip(string plate, string client, int minutes) Trip
+}
+class HourlyRentalService {
+  <<Concrete Creator>>
+  #CreateTrip(string plate, string client, int minutes) Trip
+}
+class DailyRentalService {
+  <<Concrete Creator>>
+  #CreateTrip(string plate, string client, int minutes) Trip
+}
+class WeekendRentalService {
+  <<Concrete Creator, розширення>>
+  #CreateTrip(string plate, string client, int minutes) Trip
+}
+
+class Trip {
+  <<abstract, Product>>
+  +string Plate
+  +string Client
+  +int DurationMinutes
+  +string RentalKind*
+  +CalculateCost()* decimal
+}
+
+class MinuteTrip {
+  <<Concrete Product>>
+  +decimal PricePerMinute$
+}
+class HourlyTrip {
+  <<Concrete Product>>
+  +decimal PricePerHour$
+}
+class DailyTrip {
+  <<Concrete Product>>
+  +decimal PricePerDay$
+}
+class WeekendTrip {
+  <<Concrete Product, розширення>>
+  +decimal PricePerWeekend$
+}
+
+RentalService <|-- MinuteRentalService
+RentalService <|-- HourlyRentalService
+RentalService <|-- DailyRentalService
+RentalService <|-- WeekendRentalService
+
+Trip <|-- MinuteTrip
+Trip <|-- HourlyTrip
+Trip <|-- DailyTrip
+Trip <|-- WeekendTrip
+
+RentalService ..> Trip : uses
+MinuteRentalService ..> MinuteTrip : creates
+HourlyRentalService ..> HourlyTrip : creates
+DailyRentalService ..> DailyTrip : creates
+WeekendRentalService ..> WeekendTrip : creates
+note for RentalService "Rent() описує процес один раз. CreateTrip() це фабричний метод, який реалізують підкласи"

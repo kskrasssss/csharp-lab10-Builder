@@ -1,0 +1,50 @@
+classDiagram
+direction LR
+
+class BookingBuilder {
+  <<Builder>>
+  -Func~DateTime~ _clock
+  -string _client
+  -string _plate
+  -DateTime _startTime
+  -bool _childSeat
+  -bool _extraInsurance
+  -string _deliveryAddress
+  -string _comment
+  +ForClient(string client) BookingBuilder
+  +WithCar(string plate) BookingBuilder
+  +StartingAt(DateTime time) BookingBuilder
+  +WithChildSeat() BookingBuilder
+  +WithExtraInsurance() BookingBuilder
+  +DeliveredTo(string address) BookingBuilder
+  +WithComment(string comment) BookingBuilder
+  +Build() Booking
+}
+
+class Booking {
+  <<Product, immutable>>
+  +string Client
+  +string Plate
+  +DateTime StartTime
+  +bool ChildSeat
+  +bool ExtraInsurance
+  +string DeliveryAddress
+  +string Comment
+  ~Booking(...)
+}
+
+class BookingDirector {
+  <<Director>>
+  +BuildChildTrip(BookingBuilder b, string client, string plate, DateTime start) Booking
+  +BuildAirportTrip(BookingBuilder b, string client, string plate, DateTime start, string address) Booking
+}
+
+class BookingBuildException {
+  <<Exception>>
+}
+
+BookingBuilder ..> Booking : creates
+BookingBuilder ..> BookingBuildException : throws
+BookingDirector ..> BookingBuilder : drives
+BookingDirector ..> Booking : returns
+note for BookingBuilder "Build() перевіряє клієнта, авто і час початку. Неповний Booking створити неможливо"
